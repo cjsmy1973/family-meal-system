@@ -18,7 +18,15 @@ public class ReservationService
         return await _context.Reservations
             .Include(r => r.Recipe)
             .OrderBy(r => r.ReservationDate)
-            .Select(r => new ReservationDto(r.Id, r.ReservationDate, r.MealType, r.RecipeId, r.Recipe.Name, r.CreatedAt))
+            .Select(r => new ReservationDto
+            {
+                Id = r.Id,
+                ReservationDate = r.ReservationDate,
+                MealType = r.MealType,
+                RecipeId = r.RecipeId,
+                RecipeName = r.Recipe.Name,
+                CreatedAt = r.CreatedAt
+            })
             .ToListAsync();
     }
 
@@ -28,7 +36,15 @@ public class ReservationService
             .Include(r => r.Recipe)
             .FirstOrDefaultAsync(r => r.Id == id);
         if (reservation == null) return null;
-        return new ReservationDto(reservation.Id, reservation.ReservationDate, reservation.MealType, reservation.RecipeId, reservation.Recipe.Name, reservation.CreatedAt);
+        return new ReservationDto
+        {
+            Id = reservation.Id,
+            ReservationDate = reservation.ReservationDate,
+            MealType = reservation.MealType,
+            RecipeId = reservation.RecipeId,
+            RecipeName = reservation.Recipe.Name,
+            CreatedAt = reservation.CreatedAt
+        };
     }
 
     public async Task<ReservationDto> CreateAsync(CreateReservationDto dto)
@@ -42,7 +58,15 @@ public class ReservationService
         };
         _context.Reservations.Add(reservation);
         await _context.SaveChangesAsync();
-        return new ReservationDto(reservation.Id, reservation.ReservationDate, reservation.MealType, reservation.RecipeId, "", reservation.CreatedAt);
+        return new ReservationDto
+        {
+            Id = reservation.Id,
+            ReservationDate = reservation.ReservationDate,
+            MealType = reservation.MealType,
+            RecipeId = reservation.RecipeId,
+            RecipeName = "",
+            CreatedAt = reservation.CreatedAt
+        };
     }
 
     public async Task<bool> DeleteAsync(int id)
@@ -80,14 +104,15 @@ public class ReservationService
                     var key = si.Ingredient.Name;
                     if (!ingredientGroups.ContainsKey(key))
                     {
-                        ingredientGroups[key] = new ShoppingItemDto(
-                            si.Ingredient.Name,
-                            si.Ingredient.Category ?? "未分类",
-                            0,
-                            si.Unit ?? si.Ingredient.Unit ?? "g"
-                        );
+                        ingredientGroups[key] = new ShoppingItemDto
+                        {
+                            Name = si.Ingredient.Name,
+                            Category = si.Ingredient.Category ?? "未分类",
+                            TotalAmount = 0,
+                            Unit = si.Unit ?? si.Ingredient.Unit ?? "g"
+                        };
                     }
-                    ingredientGroups[key] = ingredientGroups[key] with { TotalAmount = ingredientGroups[key].TotalAmount + si.Amount };
+                    ingredientGroups[key].TotalAmount += si.Amount;
                 }
 
                 foreach (var sc in step.StepCondiments)
@@ -95,21 +120,23 @@ public class ReservationService
                     var key = sc.Condiment.Name;
                     if (!condimentGroups.ContainsKey(key))
                     {
-                        condimentGroups[key] = new ShoppingItemDto(
-                            sc.Condiment.Name,
-                            "调味品",
-                            0,
-                            sc.Unit ?? sc.Condiment.Unit ?? "g"
-                        );
+                        condimentGroups[key] = new ShoppingItemDto
+                        {
+                            Name = sc.Condiment.Name,
+                            Category = "调味品",
+                            TotalAmount = 0,
+                            Unit = sc.Unit ?? sc.Condiment.Unit ?? "g"
+                        };
                     }
-                    condimentGroups[key] = condimentGroups[key] with { TotalAmount = condimentGroups[key].TotalAmount + sc.Amount };
+                    condimentGroups[key].TotalAmount += sc.Amount;
                 }
             }
         }
 
-        return new ShoppingListDto(
-            ingredientGroups.Values.ToList(),
-            condimentGroups.Values.ToList()
-        );
+        return new ShoppingListDto
+        {
+            Ingredients = ingredientGroups.Values.ToList(),
+            Condiments = condimentGroups.Values.ToList()
+        };
     }
 }

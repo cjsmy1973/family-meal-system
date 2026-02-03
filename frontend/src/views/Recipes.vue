@@ -45,8 +45,16 @@
         <p>餐次: {{ currentRecipe.mealType }}</p>
         <p>描述: {{ currentRecipe.description }}</p>
         <el-divider content-position="left">步骤</el-divider>
-        <div v-for="step in currentRecipe.steps" :key="step.id" style="margin-bottom: 15px">
-          <strong>步骤 {{ step.stepOrder }}</strong>
+        <div v-for="step in currentRecipe.steps" :key="step.id" class="step-item">
+          <div class="step-header">
+            <strong>步骤 {{ step.stepOrder }}</strong>
+          </div>
+          <el-image
+            v-if="step.imageUrl"
+            :src="step.imageUrl"
+            class="step-image"
+            fit="cover"
+          />
           <p>{{ step.description }}</p>
           <div v-if="step.ingredients.length">
             <small>食材: {{ step.ingredients.map((i: any) => `${i.ingredientName}${i.amount}${i.unit || ''}`).join(', ') }}</small>
@@ -105,5 +113,20 @@ onMounted(loadData)
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+.step-item {
+  margin-bottom: 20px;
+  padding: 10px;
+  background: #f5f7fa;
+  border-radius: 8px;
+}
+.step-header {
+  margin-bottom: 8px;
+}
+.step-image {
+  width: 200px;
+  height: 150px;
+  margin: 10px 0;
+  border-radius: 4px;
 }
 </style>

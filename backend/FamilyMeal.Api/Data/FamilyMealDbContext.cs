@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using FamilyMeal.Api.Models;
 
 namespace FamilyMeal.Api.Data;
@@ -19,40 +20,89 @@ public class FamilyMealDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        modelBuilder.Entity<RecipeStep>()
-            .HasOne(s => s.Recipe)
-            .WithMany(r => r.RecipeSteps)
-            .HasForeignKey(s => s.RecipeId)
-            .OnDelete(DeleteBehavior.Cascade);
+        // Configure Ingredient
+        modelBuilder.Entity<Ingredient>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).HasMaxLength(100).IsRequired();
+            entity.Property(e => e.Category).HasMaxLength(50);
+            entity.Property(e => e.Unit).HasMaxLength(50);
+        });
 
-        modelBuilder.Entity<StepIngredient>()
-            .HasOne(si => si.Step)
-            .WithMany(s => s.StepIngredients)
-            .HasForeignKey(si => si.StepId)
-            .OnDelete(DeleteBehavior.Cascade);
+        // Configure Condiment
+        modelBuilder.Entity<Condiment>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).HasMaxLength(100).IsRequired();
+            entity.Property(e => e.Unit).HasMaxLength(50);
+        });
 
-        modelBuilder.Entity<StepIngredient>()
-            .HasOne(si => si.Ingredient)
-            .WithMany()
-            .HasForeignKey(si => si.IngredientId)
-            .OnDelete(DeleteBehavior.Cascade);
+        // Configure Recipe
+        modelBuilder.Entity<Recipe>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Name).HasMaxLength(100).IsRequired();
+            entity.Property(e => e.Description).HasMaxLength(500);
+            entity.Property(e => e.ImageUrl).HasMaxLength(255);
+            entity.Property(e => e.MealType).HasMaxLength(20).IsRequired();
+        });
 
-        modelBuilder.Entity<StepCondiment>()
-            .HasOne(sc => sc.Step)
-            .WithMany(s => s.StepCondiments)
-            .HasForeignKey(sc => sc.StepId)
-            .OnDelete(DeleteBehavior.Cascade);
+        // Configure RecipeStep
+        modelBuilder.Entity<RecipeStep>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Description).HasMaxLength(500).IsRequired();
+            entity.Property(e => e.ImageUrl).HasMaxLength(255);
 
-        modelBuilder.Entity<StepCondiment>()
-            .HasOne(sc => sc.Condiment)
-            .WithMany()
-            .HasForeignKey(sc => sc.CondimentId)
-            .OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne(e => e.Recipe)
+                .WithMany(r => r.RecipeSteps)
+                .HasForeignKey(e => e.RecipeId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
-        modelBuilder.Entity<Reservation>()
-            .HasOne(r => r.Recipe)
-            .WithMany()
-            .HasForeignKey(r => r.RecipeId)
-            .OnDelete(DeleteBehavior.Cascade);
+        // Configure StepIngredient
+        modelBuilder.Entity<StepIngredient>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Unit).HasMaxLength(20);
+
+            entity.HasOne(e => e.Step)
+                .WithMany(s => s.StepIngredients)
+                .HasForeignKey(e => e.StepId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Ingredient)
+                .WithMany()
+                .HasForeignKey(e => e.IngredientId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Configure StepCondiment
+        modelBuilder.Entity<StepCondiment>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+            entity.Property(e => e.Unit).HasMaxLength(20);
+
+            entity.HasOne(e => e.Step)
+                .WithMany(s => s.StepCondiments)
+                .HasForeignKey(e => e.StepId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity.HasOne(e => e.Condiment)
+                .WithMany()
+                .HasForeignKey(e => e.CondimentId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        // Configure Reservation
+        modelBuilder.Entity<Reservation>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.HasOne(e => e.Recipe)
+                .WithMany()
+                .HasForeignKey(e => e.RecipeId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
     }
 }

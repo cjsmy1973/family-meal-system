@@ -17,7 +17,13 @@ public class CondimentService
     {
         return await _context.Condiments
             .OrderBy(c => c.CreatedAt)
-            .Select(c => new CondimentDto(c.Id, c.Name, c.Unit, c.CreatedAt))
+            .Select(c => new CondimentDto
+            {
+                Id = c.Id,
+                Name = c.Name,
+                Unit = c.Unit,
+                CreatedAt = c.CreatedAt
+            })
             .ToListAsync();
     }
 
@@ -25,7 +31,13 @@ public class CondimentService
     {
         var condiment = await _context.Condiments.FindAsync(id);
         if (condiment == null) return null;
-        return new CondimentDto(condiment.Id, condiment.Name, condiment.Unit, condiment.CreatedAt);
+        return new CondimentDto
+        {
+            Id = condiment.Id,
+            Name = condiment.Name,
+            Unit = condiment.Unit,
+            CreatedAt = condiment.CreatedAt
+        };
     }
 
     public async Task<CondimentDto> CreateAsync(CreateCondimentDto dto)
@@ -38,7 +50,13 @@ public class CondimentService
         };
         _context.Condiments.Add(condiment);
         await _context.SaveChangesAsync();
-        return new CondimentDto(condiment.Id, condiment.Name, condiment.Unit, condiment.CreatedAt);
+        return new CondimentDto
+        {
+            Id = condiment.Id,
+            Name = condiment.Name,
+            Unit = condiment.Unit,
+            CreatedAt = condiment.CreatedAt
+        };
     }
 
     public async Task<bool> UpdateAsync(int id, UpdateCondimentDto dto)

@@ -48,6 +48,22 @@
               <el-input v-model="step.description" type="textarea" />
             </el-form-item>
 
+            <el-form-item label="步骤图片">
+              <el-upload
+                class="step-uploader"
+                :show-file-list="false"
+                :auto-upload="false"
+                accept="image/*"
+                :on-change="(file: any) => handleStepImageChange(file, index)"
+                :disabled="uploadingStepIndex === index"
+              >
+                <el-image v-if="step.imageUrl" :src="step.imageUrl" fit="cover" class="step-image" />
+                <el-icon v-else class="step-uploader-icon"><Plus /></el-icon>
+              </el-upload>
+              <el-button v-if="step.imageUrl" type="danger" link size="small" @click="step.imageUrl = ''">删除图片</el-button>
+              <span v-if="uploadingStepIndex === index" style="margin-left: 10px; color: #409EFF">上传中...</span>
+            </el-form-item>
+
             <el-form-item label="食材">
               <el-select
                 v-model="step.ingredients"
@@ -127,6 +143,7 @@ const router = useRouter()
 const isEdit = computed(() => !!route.params.id)
 const allIngredients = ref<any[]>([])
 const allCondiments = ref<any[]>([])
+const uploadingStepIndex = ref<number | null>(null)
 
 const form = ref({
   name: '',
@@ -137,6 +154,7 @@ const form = ref({
     {
       stepOrder: 1,
       description: '',
+      imageUrl: '',
       ingredients: [] as number[],
       ingredientDetails: [] as any[],
       condiments: [] as number[],
@@ -156,11 +174,27 @@ const getCondimentName = (id: number) => {
 }
 
 const handleImageChange = async (file: any) => {
+  uploadingStepIndex.value = -1
   try {
     const { data } = await uploadImage(file.raw)
     form.value.imageUrl = data.url
   } catch (error) {
     ElMessage.error('图片上传失败')
+  } finally {
+    uploadingStepIndex.value = null
+  }
+}
+
+const handleStepImageChange = async (file: any, stepIndex: number) => {
+  uploadingStepIndex.value = stepIndex
+  try {
+    const { data } = await uploadImage(file.raw)
+    form.value.steps[stepIndex].imageUrl = data.url
+    ElMessage.success('图片上传成功')
+  } catch (error) {
+    ElMessage.error('图片上传失败')
+  } finally {
+    uploadingStepIndex.value = null
   }
 }
 
@@ -168,6 +202,7 @@ const addStep = () => {
   form.value.steps.push({
     stepOrder: form.value.steps.length + 1,
     description: '',
+    imageUrl: '',
     ingredients: [],
     ingredientDetails: [],
     condiments: [],
@@ -223,6 +258,7 @@ const loadData = async () => {
       steps: data.steps.map((s: any) => ({
         stepOrder: s.stepOrder,
         description: s.description,
+        imageUrl: s.imageUrl || '',
         ingredients: s.ingredients.map((i: any) => i.ingredientId),
         ingredientDetails: s.ingredients.map((i: any) => ({
           ingredientId: i.ingredientId,
@@ -257,20 +293,41 @@ const saveRecipe = async () => {
     mealType: form.value.mealType,
     description: form.value.description,
     imageUrl: form.value.imageUrl,
-    steps: form.value.steps.map(s => ({
-      stepOrder: s.stepOrder,
-      description: s.description,
-      ingredients: s.ingredientDetails.map((i: any) => ({
-        ingredientId: i.ingredientId,
-        amount: i.amount,
-        unit: i.unit
-      })),
-      condiments: s.condimentDetails.map((c: any) => ({
-        condimentId: c.condimentId,
-        amount: c.amount,
-        unit: c.unit
-      }))
-    }))
+    steps: form.value.steps.map(s => {
+      // 处理食材：如果 ingredientDetails 为空但 ingredients 不为空
+      let ingredientDetails = s.ingredientDetails
+      if (ingredientDetails.length === 0 && s.ingredients.length > 0) {
+        ingredientDetails = s.ingredients.map((id: number) => ({
+          ingredientId: id,
+          amount: 0,
+          unit: ''
+        }))
+      }
+      // 处理调味品：如果 condimentDetails 为空但 condiments 不为空
+      let condimentDetails = s.condimentDetails
+      if (condimentDetails.length === 0 && s.condiments.length > 0) {
+        condimentDetails = s.condiments.map((id: number) => ({
+          condimentId: id,
+          amount: 0,
+          unit: ''
+        }))
+      }
+      return {
+        stepOrder: s.stepOrder,
+        description: s.description,
+        imageUrl: s.imageUrl,
+        ingredients: ingredientDetails.map((i: any) => ({
+          ingredientId: i.ingredientId,
+          amount: i.amount,
+          unit: i.unit
+        })),
+        condiments: condimentDetails.map((c: any) => ({
+          condimentId: c.condimentId,
+          amount: c.amount,
+          unit: c.unit
+        }))
+      }
+    })
   }
 
   try {
@@ -319,5 +376,26 @@ onMounted(loadData)
 .avatar {
   width: 120px;
   height: 120px;
+}
+.step-uploader {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  width: 100px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.step-uploader:hover {
+  border-color: #409EFF;
+}
+.step-uploader-icon {
+  font-size: 24px;
+  color: #8c939d;
+}
+.step-image {
+  width: 100px;
+  height: 100px;
 }
 </style>

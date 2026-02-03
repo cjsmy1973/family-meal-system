@@ -17,7 +17,15 @@ public class RecipeService
     {
         return await _context.Recipes
             .OrderByDescending(r => r.CreatedAt)
-            .Select(r => new RecipeDto(r.Id, r.Name, r.Description, r.ImageUrl, r.MealType, r.CreatedAt))
+            .Select(r => new RecipeDto
+            {
+                Id = r.Id,
+                Name = r.Name,
+                Description = r.Description,
+                ImageUrl = r.ImageUrl,
+                MealType = r.MealType,
+                CreatedAt = r.CreatedAt
+            })
             .ToListAsync();
     }
 
@@ -25,7 +33,15 @@ public class RecipeService
     {
         var recipe = await _context.Recipes.FindAsync(id);
         if (recipe == null) return null;
-        return new RecipeDto(recipe.Id, recipe.Name, recipe.Description, recipe.ImageUrl, recipe.MealType, recipe.CreatedAt);
+        return new RecipeDto
+        {
+            Id = recipe.Id,
+            Name = recipe.Name,
+            Description = recipe.Description,
+            ImageUrl = recipe.ImageUrl,
+            MealType = recipe.MealType,
+            CreatedAt = recipe.CreatedAt
+        };
     }
 
     public async Task<RecipeDetailDto?> GetDetailAsync(int id)
@@ -43,34 +59,38 @@ public class RecipeService
 
         var steps = recipe.RecipeSteps
             .OrderBy(s => s.StepOrder)
-            .Select(s => new RecipeStepDto(
-                s.Id,
-                s.StepOrder,
-                s.Description,
-                s.ImageUrl,
-                s.StepIngredients.Select(si => new StepIngredientDto(
-                    si.IngredientId,
-                    si.Ingredient.Name,
-                    si.Amount,
-                    si.Unit
-                )).ToList(),
-                s.StepCondiments.Select(sc => new StepCondimentDto(
-                    sc.CondimentId,
-                    sc.Condiment.Name,
-                    sc.Amount,
-                    sc.Unit
-                )).ToList()
-            )).ToList();
+            .Select(s => new RecipeStepDto
+            {
+                Id = s.Id,
+                StepOrder = s.StepOrder,
+                Description = s.Description,
+                ImageUrl = s.ImageUrl,
+                Ingredients = s.StepIngredients.Select(si => new StepIngredientDto
+                {
+                    IngredientId = si.IngredientId,
+                    IngredientName = si.Ingredient.Name,
+                    Amount = si.Amount,
+                    Unit = si.Unit
+                }).ToList(),
+                Condiments = s.StepCondiments.Select(sc => new StepCondimentDto
+                {
+                    CondimentId = sc.CondimentId,
+                    CondimentName = sc.Condiment.Name,
+                    Amount = sc.Amount,
+                    Unit = sc.Unit
+                }).ToList()
+            }).ToList();
 
-        return new RecipeDetailDto(
-            recipe.Id,
-            recipe.Name,
-            recipe.Description,
-            recipe.ImageUrl,
-            recipe.MealType,
-            recipe.CreatedAt,
-            steps
-        );
+        return new RecipeDetailDto
+        {
+            Id = recipe.Id,
+            Name = recipe.Name,
+            Description = recipe.Description,
+            ImageUrl = recipe.ImageUrl,
+            MealType = recipe.MealType,
+            CreatedAt = recipe.CreatedAt,
+            Steps = steps
+        };
     }
 
     public async Task<RecipeDto> CreateAsync(CreateRecipeFullDto dto)
@@ -126,7 +146,15 @@ public class RecipeService
             await _context.SaveChangesAsync();
         }
 
-        return new RecipeDto(recipe.Id, recipe.Name, recipe.Description, recipe.ImageUrl, recipe.MealType, recipe.CreatedAt);
+        return new RecipeDto
+        {
+            Id = recipe.Id,
+            Name = recipe.Name,
+            Description = recipe.Description,
+            ImageUrl = recipe.ImageUrl,
+            MealType = recipe.MealType,
+            CreatedAt = recipe.CreatedAt
+        };
     }
 
     public async Task<bool> UpdateAsync(int id, UpdateRecipeDto dto)

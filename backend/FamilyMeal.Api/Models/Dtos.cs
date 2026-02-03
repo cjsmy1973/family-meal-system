@@ -1,60 +1,171 @@
 namespace FamilyMeal.Api.Models;
 
 // Ingredient DTOs
-public record CreateIngredientDto(string Name, string? Category, string? Unit);
-public record UpdateIngredientDto(string Name, string? Category, string? Unit);
-public record IngredientDto(int Id, string Name, string? Category, string? Unit, DateTime CreatedAt);
+public class CreateIngredientDto
+{
+    public string Name { get; set; }
+    public string? Category { get; set; }
+    public string? Unit { get; set; }
+}
+public class UpdateIngredientDto
+{
+    public string Name { get; set; }
+    public string? Category { get; set; }
+    public string? Unit { get; set; }
+}
+public class IngredientDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string? Category { get; set; }
+    public string? Unit { get; set; }
+    public DateTime CreatedAt { get; set; }
+}
 
 // Condiment DTOs
-public record CreateCondimentDto(string Name, string? Unit);
-public record UpdateCondimentDto(string Name, string? Unit);
-public record CondimentDto(int Id, string Name, string? Unit, DateTime CreatedAt);
+public class CreateCondimentDto
+{
+    public string Name { get; set; }
+    public string? Unit { get; set; }
+}
+public class UpdateCondimentDto
+{
+    public string Name { get; set; }
+    public string? Unit { get; set; }
+}
+public class CondimentDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string? Unit { get; set; }
+    public DateTime CreatedAt { get; set; }
+}
 
 // Recipe DTOs
-public record CreateRecipeDto(string Name, string? Description, string? ImageUrl, string MealType);
-public record UpdateRecipeDto(string Name, string? Description, string? ImageUrl, string MealType);
-public record RecipeDto(int Id, string Name, string? Description, string? ImageUrl, string MealType, DateTime CreatedAt);
+public class CreateRecipeDto
+{
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public string? ImageUrl { get; set; }
+    public string MealType { get; set; } = string.Empty;
+}
+public class UpdateRecipeDto
+{
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public string? ImageUrl { get; set; }
+    public string MealType { get; set; } = string.Empty;
+}
+public class RecipeDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public string? ImageUrl { get; set; }
+    public string MealType { get; set; } = string.Empty;
+    public DateTime CreatedAt { get; set; }
+}
 
 // Recipe Detail DTO
-public record RecipeDetailDto(
-    int Id,
-    string Name,
-    string? Description,
-    string? ImageUrl,
-    string MealType,
-    DateTime CreatedAt,
-    List<RecipeStepDto> Steps
-);
+public class RecipeDetailDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; }
+    public string? Description { get; set; }
+    public string? ImageUrl { get; set; }
+    public string MealType { get; set; }
+    public DateTime CreatedAt { get; set; }
+    public List<RecipeStepDto> Steps { get; set; } = new();
+}
 
-public record RecipeStepDto(
-    int Id,
-    int StepOrder,
-    string Description,
-    string? ImageUrl,
-    List<StepIngredientDto> Ingredients,
-    List<StepCondimentDto> Condiments
-);
+public class RecipeStepDto
+{
+    public int Id { get; set; }
+    public int StepOrder { get; set; }
+    public string Description { get; set; }
+    public string? ImageUrl { get; set; }
+    public List<StepIngredientDto> Ingredients { get; set; } = new();
+    public List<StepCondimentDto> Condiments { get; set; } = new();
+}
 
-public record StepIngredientDto(int IngredientId, string IngredientName, double Amount, string? Unit);
-public record StepCondimentDto(int CondimentId, string CondimentName, double Amount, string? Unit);
+public class StepIngredientDto
+{
+    public int IngredientId { get; set; }
+    public string IngredientName { get; set; }
+    public double Amount { get; set; }
+    public string? Unit { get; set; }
+}
+
+public class StepCondimentDto
+{
+    public int CondimentId { get; set; }
+    public string CondimentName { get; set; }
+    public double Amount { get; set; }
+    public string? Unit { get; set; }
+}
 
 // Recipe Step DTOs for creation
-public record CreateRecipeStepDto(int StepOrder, string Description, string? ImageUrl, List<CreateStepIngredientDto> Ingredients, List<CreateStepCondimentDto> Condiments);
-public record CreateStepIngredientDto(int IngredientId, double Amount, string? Unit);
-public record CreateStepCondimentDto(int CondimentId, double Amount, string? Unit);
+public class CreateRecipeStepDto
+{
+    public int StepOrder { get; set; }
+    public string Description { get; set; } = string.Empty;
+    public string? ImageUrl { get; set; }
+    public List<CreateStepIngredientDto> Ingredients { get; set; } = new();
+    public List<CreateStepCondimentDto> Condiments { get; set; } = new();
+}
 
-public record CreateRecipeFullDto(
-    string Name,
-    string? Description,
-    string? ImageUrl,
-    string MealType,
-    List<CreateRecipeStepDto> Steps
-);
+public class CreateStepIngredientDto
+{
+    public int IngredientId { get; set; }
+    public double Amount { get; set; }
+    public string? Unit { get; set; }
+}
+
+public class CreateStepCondimentDto
+{
+    public int CondimentId { get; set; }
+    public double Amount { get; set; }
+    public string? Unit { get; set; }
+}
+
+public class CreateRecipeFullDto
+{
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public string? ImageUrl { get; set; }
+    public string MealType { get; set; } = string.Empty;
+    public List<CreateRecipeStepDto> Steps { get; set; } = new();
+}
+
+// Recipe response DTO (already defined above)
 
 // Reservation DTOs
-public record CreateReservationDto(DateTime ReservationDate, string MealType, int RecipeId);
-public record ReservationDto(int Id, DateTime ReservationDate, string MealType, int RecipeId, string RecipeName, DateTime CreatedAt);
+public class CreateReservationDto
+{
+    public DateTime ReservationDate { get; set; }
+    public string MealType { get; set; } = string.Empty;
+    public int RecipeId { get; set; }
+}
+public class ReservationDto
+{
+    public int Id { get; set; }
+    public DateTime ReservationDate { get; set; }
+    public string MealType { get; set; }
+    public int RecipeId { get; set; }
+    public string RecipeName { get; set; }
+    public DateTime CreatedAt { get; set; }
+}
 
 // Shopping List DTOs
-public record ShoppingItemDto(string Name, string Category, double TotalAmount, string Unit);
-public record ShoppingListDto(List<ShoppingItemDto> Ingredients, List<ShoppingItemDto> Condiments);
+public class ShoppingItemDto
+{
+    public string Name { get; set; }
+    public string Category { get; set; }
+    public double TotalAmount { get; set; }
+    public string Unit { get; set; }
+}
+public class ShoppingListDto
+{
+    public List<ShoppingItemDto> Ingredients { get; set; } = new();
+    public List<ShoppingItemDto> Condiments { get; set; } = new();
+}

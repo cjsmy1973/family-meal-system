@@ -17,7 +17,14 @@ public class IngredientService
     {
         return await _context.Ingredients
             .OrderBy(i => i.CreatedAt)
-            .Select(i => new IngredientDto(i.Id, i.Name, i.Category, i.Unit, i.CreatedAt))
+            .Select(i => new IngredientDto
+            {
+                Id = i.Id,
+                Name = i.Name,
+                Category = i.Category,
+                Unit = i.Unit,
+                CreatedAt = i.CreatedAt
+            })
             .ToListAsync();
     }
 
@@ -25,7 +32,14 @@ public class IngredientService
     {
         var ingredient = await _context.Ingredients.FindAsync(id);
         if (ingredient == null) return null;
-        return new IngredientDto(ingredient.Id, ingredient.Name, ingredient.Category, ingredient.Unit, ingredient.CreatedAt);
+        return new IngredientDto
+        {
+            Id = ingredient.Id,
+            Name = ingredient.Name,
+            Category = ingredient.Category,
+            Unit = ingredient.Unit,
+            CreatedAt = ingredient.CreatedAt
+        };
     }
 
     public async Task<IngredientDto> CreateAsync(CreateIngredientDto dto)
@@ -39,7 +53,14 @@ public class IngredientService
         };
         _context.Ingredients.Add(ingredient);
         await _context.SaveChangesAsync();
-        return new IngredientDto(ingredient.Id, ingredient.Name, ingredient.Category, ingredient.Unit, ingredient.CreatedAt);
+        return new IngredientDto
+        {
+            Id = ingredient.Id,
+            Name = ingredient.Name,
+            Category = ingredient.Category,
+            Unit = ingredient.Unit,
+            CreatedAt = ingredient.CreatedAt
+        };
     }
 
     public async Task<bool> UpdateAsync(int id, UpdateIngredientDto dto)

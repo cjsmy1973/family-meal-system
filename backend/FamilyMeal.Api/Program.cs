@@ -34,6 +34,19 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
+app.Logger.LogInformation("Ensuring database exists...");
+try
+{
+    using var scope = app.Services.CreateScope();
+    var context = scope.ServiceProvider.GetRequiredService<FamilyMealDbContext>();
+    context.Database.EnsureCreated();
+    app.Logger.LogInformation("Database ensured successfully");
+}
+catch (Exception ex)
+{
+    app.Logger.LogError(ex, "Error ensuring database exists");
+}
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -43,7 +56,18 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors("AllowAll");
 
-app.UseStaticFiles();
+// Create uploads directory if it doesn't exist
+var uploadsPath = Path.Combine(builder.Environment.ContentRootPath, "uploads");
+if (!Directory.Exists(uploadsPath))
+    Directory.CreateDirectory(uploadsPath);
+
+// Serve static files from uploads directory
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(uploadsPath),
+    RequestPath = "/uploads"
+});
+
 app.UseAuthorization();
 app.MapControllers();
 

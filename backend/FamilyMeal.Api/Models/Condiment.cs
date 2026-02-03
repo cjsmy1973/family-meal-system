@@ -15,6 +15,4 @@ public class Condiment
     public string? Unit { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-    public ICollection<StepCondiment> StepCondiments { get; set; } = new List<StepCondiment>();
 }

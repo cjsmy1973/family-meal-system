@@ -18,6 +18,4 @@ public class Ingredient
     public string? Unit { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
-
-    public ICollection<StepIngredient> StepIngredients { get; set; } = new List<StepIngredient>();
 }
