@@ -1,0 +1,23 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace FamilyMeal.Api.Models;
+
+public class Ingredient
+{
+    [Key]
+    public int Id { get; set; }
+
+    [Required]
+    [MaxLength(100)]
+    public string Name { get; set; } = string.Empty;
+
+    [MaxLength(50)]
+    public string? Category { get; set; }
+
+    [MaxLength(50)]
+    public string? Unit { get; set; }
+
+    public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public ICollection<StepIngredient> StepIngredients { get; set; } = new List<StepIngredient>();
+}
