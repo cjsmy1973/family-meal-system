@@ -29,7 +29,7 @@ services:
       - MYSQL_PASSWORD=rootpassword
       - ConnectionStrings__DefaultConnection=Server=mysql;Database=family_meal;User=root;Password=rootpassword;CharSet=utf8mb4;
     ports:
-      - "5000:5000"
+      - "8088:5000"
     volumes:
       - backend_uploads:/app/uploads
     depends_on:
@@ -42,7 +42,7 @@ services:
       dockerfile: Dockerfile
     container_name: family-meal-frontend
     ports:
-      - "3000:80"
+      - "8080:80"
     depends_on:
       - backend
 
