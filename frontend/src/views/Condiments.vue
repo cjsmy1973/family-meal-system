@@ -3,32 +3,44 @@
     <el-card>
       <template #header>
         <div class="card-header">
-          <span>调味品管理</span>
-          <el-button type="primary" @click="showDialog = true">添加调味品</el-button>
+          <span class="card-title">调味品管理</span>
+          <el-button type="primary" @click="openAddDialog">
+            <el-icon><Plus /></el-icon>
+            <span class="btn-text">添加调味品</span>
+          </el-button>
         </div>
       </template>
 
-      <el-table :data="condiments" stripe>
+      <el-table :data="condiments" stripe class="responsive-table">
         <el-table-column prop="name" label="名称" />
-        <el-table-column prop="unit" label="单位" width="100" />
-        <el-table-column prop="createdAt" label="创建时间" width="180">
+        <el-table-column prop="unit" label="单位" width="80" />
+        <el-table-column prop="createdAt" label="创建时间" width="110">
           <template #default="{ row }">
             {{ formatDate(row.createdAt) }}
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="150">
+        <el-table-column label="操作" width="120" fixed="right">
           <template #default="{ row }">
-            <el-button type="primary" link @click="editCondiment(row)">编辑</el-button>
-            <el-button type="danger" link @click="handleDelete(row.id)">删除</el-button>
+            <div class="action-buttons">
+              <el-button type="primary" link @click="editCondiment(row)">编辑</el-button>
+              <el-button type="danger" link @click="handleDelete(row.id)">删除</el-button>
+            </div>
           </template>
         </el-table-column>
       </el-table>
     </el-card>
 
-    <el-dialog v-model="showDialog" :title="isEdit ? '编辑调味品' : '添加调味品'" width="400px">
-      <el-form :model="form" label-width="80px">
+    <el-dialog
+      v-model="showDialog"
+      :title="isEdit ? '编辑调味品' : '添加调味品'"
+      width="90%"
+      max-width="400px"
+      append-to-body
+      destroy-on-close
+    >
+      <el-form :model="form" label-position="top">
         <el-form-item label="名称" required>
-          <el-input v-model="form.name" />
+          <el-input v-model="form.name" placeholder="请输入名称" />
         </el-form-item>
         <el-form-item label="单位">
           <el-input v-model="form.unit" placeholder="如：g、ml、勺" />
@@ -46,6 +58,7 @@
 import { ref, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getCondiments, createCondiment, updateCondiment, deleteCondiment as apiDeleteCondiment } from '@/api'
+import { Plus } from '@element-plus/icons-vue'
 
 const condiments = ref<any[]>([])
 const showDialog = ref(false)
@@ -64,6 +77,13 @@ const formatDate = (date: string) => {
 const loadData = async () => {
   const { data } = await getCondiments()
   condiments.value = data
+}
+
+const openAddDialog = () => {
+  form.value = { name: '', unit: '' }
+  isEdit.value = false
+  editId.value = null
+  showDialog.value = true
 }
 
 const editCondiment = (row: any) => {
@@ -111,9 +131,69 @@ onMounted(loadData)
 </script>
 
 <style scoped>
+.condiments {
+  width: 100%;
+}
+
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.card-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.responsive-table {
+  width: 100%;
+}
+
+/* ==================== 移动端响应式样式 ==================== */
+@media (max-width: 768px) {
+  .card-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .card-title {
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .el-button {
+    width: 100%;
+  }
+
+  .btn-text {
+    margin-left: 4px;
+  }
+
+  .action-buttons {
+    flex-direction: row;
+    gap: 12px;
+  }
+
+  .action-buttons .el-button {
+    flex: 1;
+  }
+}
+
+@media (max-width: 375px) {
+  .card-title {
+    font-size: 16px;
+  }
+
+  .el-button .el-icon {
+    font-size: 16px;
+  }
 }
 </style>

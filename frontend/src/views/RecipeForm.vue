@@ -2,16 +2,21 @@
   <div class="recipe-form">
     <el-card>
       <template #header>
-        <span>{{ isEdit ? '编辑食谱' : '创建食谱' }}</span>
+        <div class="card-header">
+          <el-button text @click="$router.back()" class="back-btn">
+            <el-icon><ArrowLeft /></el-icon>
+          </el-button>
+          <span class="header-title">{{ isEdit ? '编辑食谱' : '创建食谱' }}</span>
+        </div>
       </template>
 
-      <el-form :model="form" label-width="80px">
+      <el-form :model="form" label-position="top">
         <el-form-item label="名称" required>
-          <el-input v-model="form.name" />
+          <el-input v-model="form.name" placeholder="请输入食谱名称" />
         </el-form-item>
 
         <el-form-item label="餐次" required>
-          <el-select v-model="form.mealType">
+          <el-select v-model="form.mealType" style="width: 100%">
             <el-option label="早餐" value="早餐" />
             <el-option label="午餐" value="午餐" />
             <el-option label="晚餐" value="晚餐" />
@@ -32,20 +37,30 @@
         </el-form-item>
 
         <el-form-item label="描述">
-          <el-input v-model="form.description" type="textarea" :rows="3" />
+          <el-input v-model="form.description" type="textarea" :rows="3" placeholder="请输入描述" />
         </el-form-item>
 
         <el-divider content-position="left">烹饪步骤</el-divider>
 
         <div v-for="(step, index) in form.steps" :key="index" class="step-item">
-          <el-card shadow="never">
+          <el-card shadow="never" class="step-card">
             <template #header>
-              <span>步骤 {{ index + 1 }}</span>
-              <el-button type="danger" link @click="removeStep(index)">删除</el-button>
+              <div class="step-header">
+                <span>步骤 {{ index + 1 }}</span>
+                <el-button
+                  v-if="form.steps.length > 1"
+                  type="danger"
+                  link
+                  size="small"
+                  @click="removeStep(index)"
+                >
+                  删除
+                </el-button>
+              </div>
             </template>
 
             <el-form-item label="描述" required>
-              <el-input v-model="step.description" type="textarea" />
+              <el-input v-model="step.description" type="textarea" :rows="2" placeholder="请输入步骤描述" />
             </el-form-item>
 
             <el-form-item label="步骤图片">
@@ -60,8 +75,16 @@
                 <el-image v-if="step.imageUrl" :src="step.imageUrl" fit="cover" class="step-image" />
                 <el-icon v-else class="step-uploader-icon"><Plus /></el-icon>
               </el-upload>
-              <el-button v-if="step.imageUrl" type="danger" link size="small" @click="step.imageUrl = ''">删除图片</el-button>
-              <span v-if="uploadingStepIndex === index" style="margin-left: 10px; color: #409EFF">上传中...</span>
+              <el-button
+                v-if="step.imageUrl"
+                type="danger"
+                link
+                size="small"
+                @click="step.imageUrl = ''"
+              >
+                删除图片
+              </el-button>
+              <span v-if="uploadingStepIndex === index" class="uploading-text">上传中...</span>
             </el-form-item>
 
             <el-form-item label="食材">
@@ -81,12 +104,26 @@
                 />
               </el-select>
               <div v-for="(ing, ingIdx) in step.ingredientDetails" :key="ingIdx" class="ingredient-row">
-                <span>{{ getIngredientName(ing.ingredientId) }}</span>
-                <el-input-number v-model="ing.amount" :min="0" size="small" />
-                <el-input v-model="ing.unit" placeholder="单位" size="small" style="width: 80px" />
-                <el-button type="danger" :icon="Delete" circle size="small" @click="removeIngredientDetail(index, ingIdx)" />
+                <span class="ingredient-name">{{ getIngredientName(ing.ingredientId) }}</span>
+                <div class="ingredient-inputs">
+                  <el-input-number v-model="ing.amount" :min="0" size="small" />
+                  <el-input v-model="ing.unit" placeholder="单位" size="small" class="unit-input" />
+                  <el-button
+                    type="danger"
+                    :icon="Delete"
+                    circle
+                    size="small"
+                    @click="removeIngredientDetail(index, ingIdx)"
+                  />
+                </div>
               </div>
-              <el-button v-if="step.ingredients.length > step.ingredientDetails.length" size="small" @click="addIngredientDetail(index)">
+              <el-button
+                v-if="step.ingredients.length > step.ingredientDetails.length"
+                size="small"
+                type="primary"
+                plain
+                @click="addIngredientDetail(index)"
+              >
                 添加食材用量
               </el-button>
             </el-form-item>
@@ -107,21 +144,38 @@
                 />
               </el-select>
               <div v-for="(cond, condIdx) in step.condimentDetails" :key="condIdx" class="ingredient-row">
-                <span>{{ getCondimentName(cond.condimentId) }}</span>
-                <el-input-number v-model="cond.amount" :min="0" size="small" />
-                <el-input v-model="cond.unit" placeholder="单位" size="small" style="width: 80px" />
-                <el-button type="danger" :icon="Delete" circle size="small" @click="removeCondimentDetail(index, condIdx)" />
+                <span class="ingredient-name">{{ getCondimentName(cond.condimentId) }}</span>
+                <div class="ingredient-inputs">
+                  <el-input-number v-model="cond.amount" :min="0" size="small" />
+                  <el-input v-model="cond.unit" placeholder="单位" size="small" class="unit-input" />
+                  <el-button
+                    type="danger"
+                    :icon="Delete"
+                    circle
+                    size="small"
+                    @click="removeCondimentDetail(index, condIdx)"
+                  />
+                </div>
               </div>
-              <el-button v-if="step.condiments.length > step.condimentDetails.length" size="small" @click="addCondimentDetail(index)">
+              <el-button
+                v-if="step.condiments.length > step.condimentDetails.length"
+                size="small"
+                type="primary"
+                plain
+                @click="addCondimentDetail(index)"
+              >
                 添加调味品用量
               </el-button>
             </el-form-item>
           </el-card>
         </div>
 
-        <el-button type="primary" plain @click="addStep">添加步骤</el-button>
+        <el-button type="primary" plain @click="addStep" class="add-step-btn">
+          <el-icon><Plus /></el-icon>
+          添加步骤
+        </el-button>
 
-        <div style="margin-top: 20px">
+        <div class="form-actions">
           <el-button @click="$router.back()">取消</el-button>
           <el-button type="primary" @click="saveRecipe">保存</el-button>
         </div>
@@ -134,7 +188,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Delete } from '@element-plus/icons-vue'
+import { Delete, Plus, ArrowLeft } from '@element-plus/icons-vue'
 import { getRecipeDetail, getIngredients, getCondiments, createRecipe, updateRecipe, uploadImage } from '@/api'
 
 const route = useRoute()
@@ -294,7 +348,6 @@ const saveRecipe = async () => {
     description: form.value.description,
     imageUrl: form.value.imageUrl,
     steps: form.value.steps.map(s => {
-      // 处理食材：如果 ingredientDetails 为空但 ingredients 不为空
       let ingredientDetails = s.ingredientDetails
       if (ingredientDetails.length === 0 && s.ingredients.length > 0) {
         ingredientDetails = s.ingredients.map((id: number) => ({
@@ -303,7 +356,6 @@ const saveRecipe = async () => {
           unit: ''
         }))
       }
-      // 处理调味品：如果 condimentDetails 为空但 condiments 不为空
       let condimentDetails = s.condimentDetails
       if (condimentDetails.length === 0 && s.condiments.length > 0) {
         condimentDetails = s.condiments.map((id: number) => ({
@@ -347,55 +399,246 @@ onMounted(loadData)
 </script>
 
 <style scoped>
-.step-item {
-  margin-bottom: 15px;
+.recipe-form {
+  width: 100%;
 }
-.ingredient-row {
+
+.card-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-top: 8px;
+  gap: 12px;
 }
+
+.back-btn {
+  padding: 8px;
+}
+
+.header-title {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.step-item {
+  margin-bottom: 20px;
+}
+
+.step-card {
+  margin-bottom: 16px;
+}
+
+.step-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ingredient-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  padding: 12px;
+  background: #f5f7fa;
+  border-radius: 8px;
+}
+
+.ingredient-name {
+  font-weight: 500;
+  color: #606266;
+  font-size: 14px;
+}
+
+.ingredient-inputs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.unit-input {
+  width: 80px;
+}
+
+.uploading-text {
+  margin-left: 12px;
+  color: #409EFF;
+  font-size: 14px;
+}
+
+/* 上传组件 */
 .avatar-uploader {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
+  border: 2px dashed #d9d9d9;
+  border-radius: 12px;
   cursor: pointer;
   width: 120px;
   height: 120px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: border-color 0.3s;
 }
+
 .avatar-uploader:hover {
   border-color: #409EFF;
 }
+
 .avatar-uploader-icon {
-  font-size: 28px;
+  font-size: 32px;
   color: #8c939d;
 }
+
 .avatar {
   width: 120px;
   height: 120px;
+  border-radius: 12px;
+  display: block;
 }
+
 .step-uploader {
-  border: 1px dashed #d9d9d9;
-  border-radius: 6px;
+  border: 2px dashed #d9d9d9;
+  border-radius: 8px;
   cursor: pointer;
   width: 100px;
   height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: border-color 0.3s;
 }
+
 .step-uploader:hover {
   border-color: #409EFF;
 }
+
 .step-uploader-icon {
-  font-size: 24px;
+  font-size: 28px;
   color: #8c939d;
 }
+
 .step-image {
   width: 100px;
   height: 100px;
+  border-radius: 8px;
+  display: block;
+}
+
+.add-step-btn {
+  width: 100%;
+  margin: 20px 0;
+  height: 48px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  justify-content: flex-end;
+}
+
+.form-actions .el-button {
+  min-width: 100px;
+  height: 44px;
+}
+
+/* ==================== 移动端响应式样式 ==================== */
+@media (max-width: 768px) {
+  .card-header {
+    padding: 8px 0;
+  }
+
+  .header-title {
+    font-size: 16px;
+  }
+
+  .step-card {
+    margin-bottom: 12px;
+  }
+
+  .step-header {
+    font-size: 14px;
+  }
+
+  .ingredient-row {
+    padding: 10px;
+  }
+
+  .ingredient-inputs {
+    justify-content: space-between;
+  }
+
+  .unit-input {
+    width: 70px;
+  }
+
+  .avatar-uploader {
+    width: 100px;
+    height: 100px;
+  }
+
+  .avatar {
+    width: 100px;
+    height: 100px;
+  }
+
+  .step-uploader {
+    width: 80px;
+    height: 80px;
+  }
+
+  .step-image {
+    width: 80px;
+    height: 80px;
+  }
+
+  .add-step-btn {
+    margin: 16px 0;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+    gap: 12px;
+  }
+
+  .form-actions .el-button {
+    width: 100%;
+  }
+}
+
+@media (max-width: 375px) {
+  .header-title {
+    font-size: 15px;
+  }
+
+  .avatar-uploader {
+    width: 80px;
+    height: 80px;
+  }
+
+  .avatar {
+    width: 80px;
+    height: 80px;
+  }
+
+  .avatar-uploader-icon {
+    font-size: 24px;
+  }
+
+  .step-uploader {
+    width: 70px;
+    height: 70px;
+  }
+
+  .step-image {
+    width: 70px;
+    height: 70px;
+  }
+
+  .step-uploader-icon {
+    font-size: 20px;
+  }
+
+  .unit-input {
+    width: 60px;
+  }
 }
 </style>

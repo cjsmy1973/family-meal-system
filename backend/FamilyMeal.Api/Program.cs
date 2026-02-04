@@ -11,7 +11,7 @@ builder.Services.AddSwaggerGen();
 
 // Configure MySQL
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
-    ?? "Server=localhost;Database=family_meal;User=root;Password=123456;";
+    ?? "Server=localhost;Database=family_meal;User=root;Password=123456;CharSet=utf8mb4;";
 builder.Services.AddDbContext<FamilyMealDbContext>(options =>
     options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
