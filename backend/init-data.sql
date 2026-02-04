@@ -1,5 +1,3 @@
-mysqldump: [Warning] Using a password on the command line interface can be insecure.
--- MySQL dump 10.13  Distrib 8.0.45, for Linux (x86_64)
 --
 -- Host: localhost    Database: family_meal
 -- ------------------------------------------------------
@@ -29,7 +27,7 @@ CREATE TABLE `Condiments` (
   `Unit` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `CreatedAt` datetime(6) NOT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -38,7 +36,7 @@ CREATE TABLE `Condiments` (
 
 LOCK TABLES `Condiments` WRITE;
 /*!40000 ALTER TABLE `Condiments` DISABLE KEYS */;
-INSERT INTO `Condiments` VALUES (1,'盐','g','2026-02-03 11:31:44.662934'),(2,'料酒','勺','2026-02-03 11:58:13.354911'),(3,'生抽','勺','2026-02-03 11:58:13.416028'),(4,'老抽','勺','2026-02-03 11:58:13.459050'),(5,'冰糖','g','2026-02-03 11:58:13.504436'),(6,'八角','个','2026-02-03 11:58:13.546848'),(7,'桂皮','块','2026-02-03 11:58:13.591883'),(8,'香叶','片','2026-02-03 11:58:13.641241'),(9,'盐','g','2026-02-03 11:58:13.690561'),(10,'食用油','勺','2026-02-03 11:58:13.735508');
+INSERT INTO `Condiments` VALUES (1,'盐','g','2026-02-04 04:01:52.000000'),(2,'料酒','勺','2026-02-04 04:01:52.000000'),(3,'生抽','勺','2026-02-04 04:01:52.000000'),(4,'老抽','勺','2026-02-04 04:01:52.000000'),(5,'冰糖','颗','2026-02-04 04:01:52.000000'),(6,'八角','个','2026-02-04 04:01:52.000000'),(7,'桂皮','块','2026-02-04 04:01:52.000000'),(8,'香叶','片','2026-02-04 04:01:52.000000');
 /*!40000 ALTER TABLE `Condiments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -56,7 +54,7 @@ CREATE TABLE `Ingredients` (
   `Unit` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `CreatedAt` datetime(6) NOT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -65,7 +63,7 @@ CREATE TABLE `Ingredients` (
 
 LOCK TABLES `Ingredients` WRITE;
 /*!40000 ALTER TABLE `Ingredients` DISABLE KEYS */;
-INSERT INTO `Ingredients` VALUES (1,'测试','肉类','g','2026-02-03 11:31:20.486072'),(2,'五花肉','肉类','g','2026-02-03 11:56:26.277039'),(3,'葱','蔬菜','根','2026-02-03 11:56:26.381730'),(4,'姜','蔬菜','片','2026-02-03 11:56:26.436720'),(5,'蒜','蔬菜','瓣','2026-02-03 11:56:26.492898'),(6,'鸡腿肉','肉类','g','2026-02-03 12:06:04.759949'),(7,'青椒','蔬菜','个','2026-02-03 12:06:04.815559'),(8,'花椒','调料','g','2026-02-03 12:06:04.859805'),(9,'干辣椒','调料','个','2026-02-03 12:06:04.902690'),(10,'生粉','调料','勺','2026-02-03 12:06:04.946316'),(11,'土鸡','肉','只','2026-02-04 03:09:40.000000');
+INSERT INTO `Ingredients` VALUES (1,'葱','蔬菜','根','2026-02-04 04:01:34.000000'),(2,'姜','蔬菜','片','2026-02-04 04:01:34.000000'),(3,'蒜','蔬菜','瓣','2026-02-04 04:01:34.000000'),(4,'土鸡','肉类','只','2026-02-04 04:01:34.000000'),(5,'生粉','调料','勺','2026-02-04 04:01:34.000000');
 /*!40000 ALTER TABLE `Ingredients` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -85,7 +83,7 @@ CREATE TABLE `RecipeSteps` (
   PRIMARY KEY (`Id`),
   KEY `IX_RecipeSteps_RecipeId` (`RecipeId`),
   CONSTRAINT `FK_RecipeSteps_Recipes_RecipeId` FOREIGN KEY (`RecipeId`) REFERENCES `Recipes` (`Id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=36 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -94,7 +92,7 @@ CREATE TABLE `RecipeSteps` (
 
 LOCK TABLES `RecipeSteps` WRITE;
 /*!40000 ALTER TABLE `RecipeSteps` DISABLE KEYS */;
-INSERT INTO `RecipeSteps` VALUES (32,7,1,'首先准备一只剁好的土鸡，放入一个大盘里面，然后朝盘中加入2勺生粉（或面粉），把鸡肉抓捏一下。尽量让每一块鸡肉都包裹上生粉，生粉有很强的吸附能力，能够附着鸡肉表面的血水和脏东西。','/uploads/9d894a61-ed58-478f-be26-9f36acc636bd.jpg'),(33,7,2,'冷冻的鸡块必须焯水处理方法：生粉清洗干净后需要焯水，冷水下入鸡块，开中小火，水沸腾时开大火撇去浮沫，焯水时间不宜过长，撇去浮沫立即关火捞出鸡块，用热水清洗干净备用。','/uploads/663d17e7-ebce-402b-958a-d0ec782f427a.jpg'),(34,7,3,'锅中加入适量食用油，放入葱段、姜片、蒜瓣、八角、桂皮、香叶炒香，然后放入鸡块翻炒均匀，加入料酒去腥。','/uploads/58e900b5-3e03-417c-b641-4e5261995a04.jpg'),(35,7,4,'加入生抽、老抽翻炒上色，加入没过鸡块的热水，放入冰糖，大火烧开后转小火焖煮40分钟左右，最后大火收汁至浓稠即可。','/uploads/832d408e-2134-46d3-bf3e-ff9606eb18b9.jpg');
+INSERT INTO `RecipeSteps` VALUES (1,1,1,'首先准备一只剁好的土鸡，放入一个大盘里面，然后朝盘中加入2勺生粉（或面粉），把鸡肉抓捏一下。尽量让每一块鸡肉都包裹上生粉，生粉有很强的吸附能力，能够附着鸡肉表面的血水和脏东西。','/uploads/9d894a61-ed58-478f-be26-9f36acc636bd.jpg'),(2,1,2,'冷冻的鸡块必须焯水处理方法：生粉清洗干净后需要焯水，冷水下入鸡块，开中小火，水沸腾时开大火撇去浮沫，焯水时间不宜过长，撇去浮沫立即关火捞出鸡块，用热水清洗干净备用。','/uploads/663d17e7-ebce-402b-958a-d0ec782f427a.jpg'),(3,1,3,'锅中加入适量食用油，放入葱段、姜片、蒜瓣、八角、桂皮、香叶炒香，然后放入鸡块翻炒均匀，加入料酒去腥。','/uploads/58e900b5-3e03-417c-b641-4e5261995a04.jpg'),(4,1,4,'加入生抽、老抽翻炒上色，加入没过鸡块的热水，放入冰糖，大火烧开后转小火焖煮40分钟左右，最后大火收汁至浓稠即可。','/uploads/832d408e-2134-46d3-bf3e-ff9606eb18b9.jpg');
 /*!40000 ALTER TABLE `RecipeSteps` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -113,7 +111,7 @@ CREATE TABLE `Recipes` (
   `MealType` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `CreatedAt` datetime(6) NOT NULL,
   PRIMARY KEY (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -122,7 +120,7 @@ CREATE TABLE `Recipes` (
 
 LOCK TABLES `Recipes` WRITE;
 /*!40000 ALTER TABLE `Recipes` DISABLE KEYS */;
-INSERT INTO `Recipes` VALUES (7,'红烧鸡块','家常红烧鸡块，色泽红亮，肉质软嫩入味，酱香浓郁，是一道经典的家常菜。','/uploads/5c201331-8f80-4802-bfce-71792df8497f.jpg','午餐','2026-02-04 03:09:48.000000');
+INSERT INTO `Recipes` VALUES (1,'红烧鸡块','家常红烧鸡块，色泽红亮，肉质软嫩入味，酱香浓郁，是一道经典的家常菜。','/uploads/5c201331-8f80-4802-bfce-71792df8497f.jpg','午餐','2026-02-04 03:56:12.000000');
 /*!40000 ALTER TABLE `Recipes` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -145,7 +143,7 @@ CREATE TABLE `Reservations` (
   KEY `IX_Reservations_RecipeId1` (`RecipeId1`),
   CONSTRAINT `FK_Reservations_Recipes_RecipeId` FOREIGN KEY (`RecipeId`) REFERENCES `Recipes` (`Id`) ON DELETE CASCADE,
   CONSTRAINT `FK_Reservations_Recipes_RecipeId1` FOREIGN KEY (`RecipeId1`) REFERENCES `Recipes` (`Id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -154,7 +152,6 @@ CREATE TABLE `Reservations` (
 
 LOCK TABLES `Reservations` WRITE;
 /*!40000 ALTER TABLE `Reservations` DISABLE KEYS */;
-INSERT INTO `Reservations` VALUES (8,'2026-02-04 00:00:00.000000','午餐',7,'2026-02-04 03:21:39.974566',NULL);
 /*!40000 ALTER TABLE `Reservations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -176,7 +173,7 @@ CREATE TABLE `StepCondiments` (
   KEY `IX_StepCondiments_StepId` (`StepId`),
   CONSTRAINT `FK_StepCondiments_Condiments_CondimentId` FOREIGN KEY (`CondimentId`) REFERENCES `Condiments` (`Id`) ON DELETE CASCADE,
   CONSTRAINT `FK_StepCondiments_RecipeSteps_StepId` FOREIGN KEY (`StepId`) REFERENCES `RecipeSteps` (`Id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=63 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -185,7 +182,7 @@ CREATE TABLE `StepCondiments` (
 
 LOCK TABLES `StepCondiments` WRITE;
 /*!40000 ALTER TABLE `StepCondiments` DISABLE KEYS */;
-INSERT INTO `StepCondiments` VALUES (56,34,6,2,'个'),(57,34,7,1,'段'),(58,34,8,2,'片'),(59,34,2,2,'勺'),(60,35,3,3,'勺'),(61,35,4,2,'勺'),(62,35,5,5,'颗');
+INSERT INTO `StepCondiments` VALUES (8,3,6,2,'个'),(9,3,7,1,'块'),(10,3,8,2,'片'),(11,3,2,2,'勺'),(12,4,3,3,'勺'),(13,4,4,2,'勺'),(14,4,5,5,'颗');
 /*!40000 ALTER TABLE `StepCondiments` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -207,7 +204,7 @@ CREATE TABLE `StepIngredients` (
   KEY `IX_StepIngredients_StepId` (`StepId`),
   CONSTRAINT `FK_StepIngredients_Ingredients_IngredientId` FOREIGN KEY (`IngredientId`) REFERENCES `Ingredients` (`Id`) ON DELETE CASCADE,
   CONSTRAINT `FK_StepIngredients_RecipeSteps_StepId` FOREIGN KEY (`StepId`) REFERENCES `RecipeSteps` (`Id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=43 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -216,7 +213,7 @@ CREATE TABLE `StepIngredients` (
 
 LOCK TABLES `StepIngredients` WRITE;
 /*!40000 ALTER TABLE `StepIngredients` DISABLE KEYS */;
-INSERT INTO `StepIngredients` VALUES (38,32,11,1,'只'),(39,32,10,2,'勺'),(40,34,3,3,'根'),(41,34,4,5,'片'),(42,34,5,10,'瓣');
+INSERT INTO `StepIngredients` VALUES (13,1,4,1,'只'),(14,1,5,2,'勺'),(15,3,1,3,'根'),(16,3,2,5,'片'),(17,3,3,10,'瓣');
 /*!40000 ALTER TABLE `StepIngredients` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -229,4 +226,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2026-02-04  3:28:01
+-- Dump completed on 2026-02-04  4:02:34

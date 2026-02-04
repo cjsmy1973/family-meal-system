@@ -8,6 +8,9 @@ RUN dotnet publish FamilyMeal.Api/FamilyMeal.Api.csproj -c Release -o /app/publi
 FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
 
+# Install MySQL client for database initialization
+RUN apt-get update && apt-get install -y default-mysql-client && rm -rf /var/lib/apt/lists/*
+
 # Create uploads directory and copy images
 RUN mkdir -p /app/uploads/images
 COPY --from=build /app/publish .
